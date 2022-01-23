@@ -198,7 +198,11 @@ end
 ]]
 function Store:destruct()
 	for _, connection in ipairs(self._connections) do
-		connection:Disconnect()
+		if typeof(connection) == "Instance" then
+			connection:Disconnect()
+		else
+			connection:disconnect()
+		end
 	end
 
 	self._connections = nil
