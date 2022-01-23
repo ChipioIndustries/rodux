@@ -1,9 +1,11 @@
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
 
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 
 local ACTION_LOG_LENGTH = 3
+local SIGNALS_FLAG = newproxy()
 
 local rethrowErrorReporter = {
 	reportReducerError = function(prevState, action, errorResult)
@@ -98,6 +100,32 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 			return dispatch(...)
 		end
 	end
+
+	self._changedSignals = {}
+
+	local changedConnection = self.changed:connect(function(oldState, newState)
+		local function processSignals(oldState, newState, content)
+			if content[SIGNALS_FLAG] then -- is this a signal folder?
+				if oldState ~= newState then
+					for index, signal in pairs(content) do
+						if index ~= SIGNALS_FLAG then
+							signal:fire(oldState, newState)
+						end
+					end
+				end
+			else
+				oldState = oldState or {}
+				newState = newState or {}
+				for key, value in pairs(content) do
+					processSignals(oldState[key], newState[key], value)
+				end
+			end
+		end
+
+		processSignals(oldState, newState, self._changedSignals)
+	end)
+	
+	table.insert(self._connections, changedConnection)
 
 	return self
 end
@@ -207,6 +235,30 @@ function Store:flush()
 	end
 
 	self._lastState = state
+end
+
+--[[
+	Get a Signal that fires when a value changes.
+]]
+function Store:getValueChangedSignal(path: string)
+	local signal = Signal.new(self)
+	local pathSegments = path:sub(".")
+	local location = self._changedSignals
+
+	for _, segment in pairs(pathSegments) do
+		if not location[segment] then
+			location[segment] = {}
+		end
+		location = location[segment]
+	end
+
+	location._signals = location._signals or {
+		[SIGNALS_FLAG] = true;
+	}
+
+	location._signals[HttpService:GenerateGUID(false)] = signal
+
+	return signal
 end
 
 return Store

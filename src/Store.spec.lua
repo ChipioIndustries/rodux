@@ -536,4 +536,41 @@ return function()
 			store:destruct()
 		end)
 	end)
+
+	describe("getValueChangedSignal", function()
+		it("should fire when a value changes", function()
+			local function reducer(state, action)
+				return {
+					values = {
+						testValue = state.values.testValue + action.increaseBy;
+					}
+				}
+			end
+
+			local initialState = {
+				values = {
+					testValue = 5;
+				}
+			}
+
+			local store = Store.new(reducer, initialState)
+
+			local valueChanged = store:getValueChangedSignal("values.testValue")
+
+			local oldValue, newValue
+
+			valueChanged:connect(function(oldState, newState)
+				oldValue, newValue = oldState, newState
+			end)
+
+			store:dispatch({
+				increaseBy = 5
+			})
+
+			task.wait(0.1)
+
+			expect(oldValue).to.equal(5)
+			expect(newValue).to.equal(10)
+		end)
+	end)
 end
