@@ -573,4 +573,5 @@ return function()
 			expect(newValue).to.equal(10)
 		end)
 	end)
+	
 end
