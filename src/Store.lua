@@ -201,6 +201,7 @@ function Store:destruct()
 		if typeof(connection) == "Instance" then
 			connection:Disconnect()
 		else
+			print(connection)
 			connection:disconnect()
 		end
 	end
