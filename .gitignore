@@ -1,23 +1,18 @@
+# Wally packages
+/DevPackages
+/Packages
+
 # Test places and builds
 **/*.rbx[lm]*
 
-# LuaCov output location
-**/luacov.*
-
-# MkDocs build output
-/site/
-
-# Rotriever
-rotriever.lock
-Packages
-
-# Selene
-roblox.toml
-
-# Darklua
-**/darklua*
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
 
 # Misc OS and editor files
 .DS_Store
 .vscode
 .idea
+
+# Foreman installation
+/.foreman-install
