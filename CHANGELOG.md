@@ -1,6 +1,6 @@
 # Rodux Changelog
 
-## 1.0.0
+## 3.0.1
 
 * Replace continuous integration with modern tooling
 * `Store:getValueChangedSignal(string path)` function
