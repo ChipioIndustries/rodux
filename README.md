@@ -1,6 +1,6 @@
 # Rodux
 
-This is a fork of [`Roblox/rodux`](https://github.com/Roblox/rodux) that introduces multiple quality-of-life improvements.
+This is a fork of [Roblox/rodux](https://github.com/Roblox/rodux) that introduces multiple quality-of-life improvements.
 
 ## getValueChangedSignal
 
