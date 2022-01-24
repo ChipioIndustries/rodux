@@ -539,39 +539,161 @@ return function()
 
 	describe("getValueChangedSignal", function()
 		it("should fire when a value changes", function()
+			local actionName = "increaseTestValue"
+
 			local function reducer(state, action)
-				return {
-					values = {
-						testValue = state.values.testValue + action.increaseBy;
-					}
-				}
+				state = state or {}
+
+				if action.type == actionName then
+					local newState = {}
+
+					newState.testValue = (state.testValue or 0) + action.increaseBy
+
+					return newState
+				end
+
+				return state
 			end
 
 			local initialState = {
-				values = {
-					testValue = 5;
-				}
+				testValue = 5;
 			}
 
 			local store = Store.new(reducer, initialState)
 
-			local valueChanged = store:getValueChangedSignal("values.testValue")
+			local valueChanged = store:getValueChangedSignal("testValue")
 
 			local oldValue, newValue
 
-			valueChanged:connect(function(oldState, newState)
+			valueChanged:connect(function(newState, oldState)
 				oldValue, newValue = oldState, newState
 			end)
 
 			store:dispatch({
+				type = actionName;
 				increaseBy = 5
 			})
 
-			task.wait(0.1)
+			task.wait(0.5)
 
 			expect(oldValue).to.equal(5)
 			expect(newValue).to.equal(10)
 		end)
+
+		it("shouldn't fire when nil > nil", function()
+			local actionName = "changeState"
+
+			local function reducer(state, action)
+				if action.type == actionName then
+					return {}
+				end
+
+				return state
+			end
+
+			local initialState = {}
+
+			local store = Store.new(reducer, initialState)
+
+			local valueChanged = store:getValueChangedSignal("nonexistentKey")
+
+			local didChange = false
+
+			valueChanged:connect(function(newState, oldState)
+				didChange = true
+			end)
+
+			store:dispatch({
+				type = actionName;
+			})
+
+			task.wait(0.5)
+
+			expect(didChange).never.to.be.equal(true)
+		end)
+
+		it("shouldn't overwrite signals", function()
+			local actionName = "changeState"
+
+			local function reducer(state, action)
+				if action.type == actionName then
+					return {
+						value = 5
+					}
+				end
+
+				return state
+			end
+
+			local initialState = {}
+
+			local store = Store.new(reducer, initialState)
+
+			local valueChanged1 = store:getValueChangedSignal("value")
+			local valueChanged2 = store:getValueChangedSignal("value")
+
+			expect(valueChanged1).to.equal(valueChanged2)
+
+			local changed1 = false
+			local changed2 = false
+
+			valueChanged1:connect(function()
+				changed1 = true
+			end)
+
+			valueChanged2:connect(function()
+				changed2 = true
+			end)
+
+			store:dispatch({
+				type = actionName;
+			})
+
+			task.wait(0.5)
+
+			expect(changed1).to.equal(true)
+			expect(changed2).to.equal(true)
+		end)
 	end)
-	
+
+	it("should fire on table contents change", function()
+		local actionName = "changeData"
+
+		local function reducer(state, action)
+			if action.type == actionName then
+				return {
+					data = {
+						value = 5
+					}
+				}
+			end
+
+			return state
+		end
+
+		local initialState = {
+			data = {
+				value = 2
+			}
+		}
+
+		local store = Store.new(reducer, initialState)
+
+		local valueChanged = store:getValueChangedSignal("data")
+
+		local changed = false
+
+		valueChanged:connect(function()
+			changed = true
+		end)
+
+		store:dispatch({
+			type = actionName;
+		})
+
+		task.wait(0.5)
+
+		expect(changed).to.equal(true)
+	end)
+
 end

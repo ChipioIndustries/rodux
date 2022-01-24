@@ -103,26 +103,26 @@ function Store.new(reducer, initialState, middlewares, errorReporter)
 
 	self._changedSignals = {}
 
-	local changedConnection = self.changed:connect(function(oldState, newState)
-		local function processSignals(oldState, newState, content)
-			if content[SIGNALS_FLAG] then -- is this a signal folder?
-				if oldState ~= newState then
-					for index, signal in pairs(content) do
-						if index ~= SIGNALS_FLAG then
-							signal:fire(oldState, newState)
-						end
-					end
-				end
-			else
-				oldState = oldState or {}
-				newState = newState or {}
-				for key, value in pairs(content) do
-					processSignals(oldState[key], newState[key], value)
+	local changedConnection = self.changed:connect(function(newState, oldState)
+		local function getPath(dictionary, path)
+			local pathSegments = path:split(".")
+			for _, segment in ipairs(pathSegments) do
+				if typeof(dictionary) == "table" then
+					dictionary = dictionary[segment]
+				else
+					return nil
 				end
 			end
+			return dictionary
 		end
 
-		processSignals(oldState, newState, self._changedSignals)
+		for path, signal in pairs(self._changedSignals) do
+			local oldValue = getPath(oldState, path)
+			local newValue = getPath(newState, path)
+			if oldValue ~= newValue then
+				signal:fire(newValue, oldValue)
+			end
+		end
 	end)
 	
 	table.insert(self._connections, changedConnection)
@@ -201,7 +201,6 @@ function Store:destruct()
 		if typeof(connection) == "Instance" then
 			connection:Disconnect()
 		else
-			print(connection)
 			connection:disconnect()
 		end
 	end
@@ -246,24 +245,9 @@ end
 	Get a Signal that fires when a value changes.
 ]]
 function Store:getValueChangedSignal(path: string)
-	local signal = Signal.new(self)
-	local pathSegments = path:sub(".")
-	local location = self._changedSignals
+	self._changedSignals[path] = self._changedSignals[path] or Signal.new(self)
 
-	for _, segment in pairs(pathSegments) do
-		if not location[segment] then
-			location[segment] = {}
-		end
-		location = location[segment]
-	end
-
-	location._signals = location._signals or {
-		[SIGNALS_FLAG] = true;
-	}
-
-	location._signals[HttpService:GenerateGUID(false)] = signal
-
-	return signal
+	return self._changedSignals[path]
 end
 
 return Store
