@@ -19,7 +19,7 @@ If the value being listened to is a table, replacing the table will fire the sig
 * Add this line to your `wally.toml` file under `[dependencies]`:
 
 	```toml
-	Rodux = "chipioindustries/rodux@3.0.1"
+	Rodux = "chipioindustries/rodux@3.0.2"
 	```
 
 * Then run `wally install` to install the package.

@@ -40,7 +40,9 @@ jobs:
       - name: Copy Packages
         shell: bash
         run: |
+          if [ -d "Packages" ]; then
           cp -r Packages src/Packages
+          fi
 
       - name: Install zip
         uses: montudor/action-zip@v1
