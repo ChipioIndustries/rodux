@@ -1,5 +1,3 @@
-# Rodux Changelog
-
 ## 3.0.2
 
 * Replace continuous integration with modern tooling
