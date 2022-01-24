@@ -3,7 +3,7 @@ return function()
 
 	describe("new", function()
 		it("should instantiate with a reducer", function()
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(_, _)
 				return "hello, world"
 			end)
 
@@ -14,7 +14,7 @@ return function()
 		end)
 
 		it("should instantiate with a reducer and an initial state", function()
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(state, _)
 				return state
 			end, "initial state")
 
@@ -25,7 +25,7 @@ return function()
 		end)
 
 		it("should instantiate with a reducer, initial state, and middlewares", function()
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(state, _)
 				return state
 			end, "initial state", {})
 
@@ -92,7 +92,7 @@ return function()
 				return state
 			end
 
-			local function middlewareA(nextDispatch, store)
+			local function middlewareA(nextDispatch, _)
 				table.insert(events, "instantiate a")
 				return function(action)
 					table.insert(events, "execute a")
@@ -100,7 +100,7 @@ return function()
 				end
 			end
 
-			local function middlewareB(nextDispatch, store)
+			local function middlewareB(nextDispatch, _)
 				table.insert(events, "instantiate b")
 				return function(action)
 					table.insert(events, "execute b")
@@ -157,7 +157,7 @@ return function()
 			}
 
 			local innerErrorMessage = "Z4PH0D"
-			local reducerThatErrors = function(state, action)
+			local reducerThatErrors = function(_, _)
 				error(innerErrorMessage)
 			end
 
@@ -230,7 +230,7 @@ return function()
 
 	describe("getState", function()
 		it("should get the current state", function()
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(_, _)
 				return "foo"
 			end)
 
@@ -243,7 +243,7 @@ return function()
 
 		it("should throw errors if triggered during dispatches", function()
 			local store
-			store = Store.new(function(state, action)
+			store = Store.new(function(_, action)
 				if action.type ~= "@@INIT" then
 					store:getState()
 				end
@@ -372,12 +372,12 @@ return function()
 			local preCount = 0
 			local postCount = 0
 
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(state, _)
 				state = state or 0
 				return state + 1
 			end, nil, nil, mockErrorReporter)
 
-			store.changed:connect(function(state, oldState)
+			store.changed:connect(function(_, _)
 				preCount = preCount + 1
 				wait()
 				postCount = postCount + 1
@@ -409,7 +409,7 @@ return function()
 		end)
 
 		it("should throw if an action is dispatched without a type field", function()
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(state, _)
 				return state
 			end)
 
@@ -421,7 +421,7 @@ return function()
 		end)
 
 		it("should throw if the action is not a function or table", function()
-			local store = Store.new(function(state, action)
+			local store = Store.new(function(state, _)
 				return state
 			end)
 
@@ -459,7 +459,7 @@ return function()
 			}, nil, mockErrorReporter)
 
 			local innerErrorMessage = "Z4PH0D"
-			store.changed:connect(function(state, prevState)
+			store.changed:connect(function(state, _)
 				if state.Value == 15 then
 					error(innerErrorMessage)
 				end
@@ -495,7 +495,7 @@ return function()
 
 		it("should throw errors if dispatching while a dispatch is already happening", function()
 			local store
-			store = Store.new(function(state, action)
+			store = Store.new(function(_, action)
 				if action.type == "SomeAction" then
 					store:dispatch({ type = "MidDispatchAction" })
 				end
@@ -599,7 +599,7 @@ return function()
 
 			local didChange = false
 
-			valueChanged:connect(function(newState, oldState)
+			valueChanged:connect(function(_, _)
 				didChange = true
 			end)
 

@@ -1,17 +1,15 @@
 local RunService = game:GetService("RunService")
-local HttpService = game:GetService("HttpService")
 
 local Signal = require(script.Parent.Signal)
 local NoYield = require(script.Parent.NoYield)
 
 local ACTION_LOG_LENGTH = 3
-local SIGNALS_FLAG = newproxy()
 
 local rethrowErrorReporter = {
-	reportReducerError = function(prevState, action, errorResult)
+	reportReducerError = function(_, _, errorResult)
 		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
 	end,
-	reportUpdateError = function(prevState, currentState, lastActions, errorResult)
+	reportUpdateError = function(_, _, _, errorResult)
 		error(string.format("Received error: %s\n\n%s", errorResult.message, errorResult.thrownValue))
 	end,
 }

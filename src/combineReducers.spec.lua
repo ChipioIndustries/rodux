@@ -6,10 +6,10 @@ return function()
 		local bCount = 0
 
 		local reducer = combineReducers({
-			a = function(state, action)
+			a = function(_, _)
 				aCount = aCount + 1
 			end,
-			b = function(state, action)
+			b = function(_, _)
 				bCount = bCount + 1
 			end,
 		})
@@ -22,10 +22,10 @@ return function()
 
 	it("should assign each sub-reducer's value to the new state", function()
 		local reducer = combineReducers({
-			a = function(state, action)
+			a = function(state, _)
 				return (state or 0) + 1
 			end,
-			b = function(state, action)
+			b = function(state, _)
 				return (state or 0) + 3
 			end,
 		})
@@ -37,10 +37,10 @@ return function()
 
 	it("should not throw when state is nil", function()
 		local reducer = combineReducers({
-			a = function(state, action)
+			a = function(state, _)
 				return (state or 0) + 1
 			end,
-			b = function(state, action)
+			b = function(state, _)
 				return (state or 0) + 3
 			end,
 		})

@@ -9,7 +9,7 @@ local function makeActionCreator(name, fn)
 	return setmetatable({
 		name = name,
 	}, {
-		__call = function(self, ...)
+		__call = function(_, ...)
 			local result = fn(...)
 
 			assert(type(result) == "table", "Invalid action: An action creator must return a table")

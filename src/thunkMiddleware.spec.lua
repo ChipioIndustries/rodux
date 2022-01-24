@@ -3,14 +3,14 @@ return function()
 	local thunkMiddleware = require(script.Parent.thunkMiddleware)
 
 	it("should dispatch thunks", function()
-		local function reducer(state, action)
+		local function reducer(state, _)
 			return state
 		end
 
 		local store = Store.new(reducer, {}, { thunkMiddleware })
 		local thunkCount = 0
 
-		local function thunk(_store)
+		local function thunk(_)
 			thunkCount = thunkCount + 1
 		end
 
@@ -22,7 +22,7 @@ return function()
 	it("should allow normal actions to pass through", function()
 		local reducerCount = 0
 
-		local function reducer(state, action)
+		local function reducer(state, _)
 			reducerCount = reducerCount + 1
 			return state
 		end
@@ -40,14 +40,14 @@ return function()
 	end)
 
 	it("should return the value from the thunk", function()
-		local function reducer(state, action)
+		local function reducer(state, _)
 			return state
 		end
 
 		local store = Store.new(reducer, {}, { thunkMiddleware })
 		local thunkValue = "test"
 
-		local function thunk(_store)
+		local function thunk(_)
 			return thunkValue
 		end
 
@@ -66,7 +66,7 @@ return function()
 			end,
 		}
 
-		local function reducer(state, action)
+		local function reducer(state, _)
 			return state
 		end
 
@@ -75,7 +75,7 @@ return function()
 		}, { thunkMiddleware }, errorReporter)
 
 		local innerErrorMessage = "thunk failed"
-		local function thunk(_store)
+		local function thunk(_)
 			error(innerErrorMessage)
 		end
 
@@ -89,12 +89,12 @@ return function()
 	it("should recover and continue to update after a thunk errors", function()
 		local caughtErrorResult
 		local errorReporter = {
-			reportReducerError = function(_state, _action, errorResult)
+			reportReducerError = function(_, _, errorResult)
 				caughtErrorResult = errorResult
 			end,
 		}
 
-		local function reducer(state, action)
+		local function reducer(state, _)
 			return state
 		end
 
@@ -103,11 +103,11 @@ return function()
 		}, { thunkMiddleware }, errorReporter)
 
 		local innerErrorMessage = "thunk failed"
-		local function errorThunk(_store)
+		local function errorThunk(_)
 			error(innerErrorMessage)
 		end
 		local ranSafeThunk = false
-		local function safeThunk(_store)
+		local function safeThunk(_)
 			ranSafeThunk = true
 		end
 

@@ -6,13 +6,13 @@ return function()
 			a = 0,
 			b = 0,
 		}, {
-			a = function(state, action)
+			a = function(state, _)
 				return {
 					a = state.a + 1,
 					b = state.b,
 				}
 			end,
-			b = function(state, action)
+			b = function(state, _)
 				return {
 					a = state.a,
 					b = state.b + 2,
@@ -53,7 +53,7 @@ return function()
 		local callCount = 0
 
 		local reducer = createReducer(0, {
-			foo = function(state, action)
+			foo = function(_, _)
 				callCount = callCount + 1
 				return nil
 			end,
@@ -83,13 +83,13 @@ return function()
 		}
 
 		local reducer = createReducer(initialState, {
-			a = function(state, action)
+			a = function(state, _)
 				return {
 					a = state.a + 1,
 					b = state.b,
 				}
 			end,
-			b = function(state, action)
+			b = function(state, _)
 				return {
 					a = state.a,
 					b = state.b + 2,
