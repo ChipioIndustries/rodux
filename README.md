@@ -1,22 +1,35 @@
 # Rodux
 
-This is a fork of [`Roblox/rodux`] that introduces multiple quality-of-life improvements.
+This is a fork of [`Roblox/rodux`](https://github.com/Roblox/rodux) that introduces multiple quality-of-life improvements.
 
-## Installation
+## getValueChangedSignal
 
-### Method 1: Wally Package
+The `Store:getValueChangedSignal(string path)` function returns a signal that fires when that specific value changes.
 
-* Add the following line to your `wally.toml` file under [dependencies]:
-	```lua
+```lua
+store:getValueChangedSignal("playerData.ChipioIndustries"):connect(function(newValue, oldValue)
+	print("My player data changed from ", oldValue, "to", newValue)
+end)
+```
+
+If the value being listened to is a table, replacing the table will fire the signal even if the table contents don't change.
+
+## Installing with Wally
+
+* Add this line to your `wally.toml` file under `[dependencies]`:
+
+	```toml
 	Rodux = "chipioindustries/rodux@1.0.0"
 	```
-* Run `wally install` to install the package.
 
-### Method 2: Model File (Roblox Studio)
-* Download the `rbxm` model file attached to the latest release from the [GitHub releases page](https://github.com/Roblox/rodux/releases).
-* Insert the model into Studio into a place like `ReplicatedStorage`.
+* Then run `wally install` to install the package.
 
-### Method 3: Filesystem
-* Copy the `src` directory into your codebase.
-* Rename the folder to `Rodux`.
-* Use a plugin like [Rojo](https://github.com/LPGhatguy/rojo) to sync the files into a place.
+## Installing with Rojo
+
+* Download the `Packaged.zip` file from the [releases page](https://github.com/ChipioIndustries/rodux/releases).
+* Unzip the file into the desired location in your project.
+
+## Installing with Roblox
+
+* Download the `rbxm` model file from the [releases page](https://github.com/ChipioIndustries/rodux/releases).
+* Drag the model into Roblox Studio to add it to the game.

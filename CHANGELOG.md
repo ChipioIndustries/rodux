@@ -1,8 +1,9 @@
 # Rodux Changelog
 
-## 0.1.0
+## 1.0.0
 
-* Replace Lemur with run-in-roblox
+* Replace continuous integration with modern tooling
+* `Store:getValueChangedSignal(string path)` function
 
 ## 3.0.0 (2021-03-25)
 * Revise error reporting logic; restore default semantics from version 1.x ([#61](https://github.com/Roblox/rodux/pull/61)).
