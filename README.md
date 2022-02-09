@@ -23,13 +23,4 @@ If the value being listened to is a table, replacing the table will fire the sig
 	```
 
 * Then run `wally install` to install the package.
-
-## Installing with Rojo
-
-* Download the `Packaged.zip` file from the [releases page](https://github.com/ChipioIndustries/rodux/releases).
-* Unzip the file into the desired location in your project.
-
-## Installing with Roblox
-
-* Download the `rbxm` model file from the [releases page](https://github.com/ChipioIndustries/rodux/releases).
-* Drag the model into Roblox Studio to add it to the game.
+* 

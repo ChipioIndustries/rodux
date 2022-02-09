@@ -1,3 +1,7 @@
+## v3.0.3
+
+* Fix file organization
+
 ## 3.0.2
 
 * Replace continuous integration with modern tooling
